@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { JSDOM } from "jsdom"
 
 interface LinkResult {
   url: string
@@ -44,8 +43,6 @@ async function checkLink(url: string, timeout = 5000): Promise<LinkResult> {
     }
   } catch (error) {
     const loadTime = Date.now() - startTime
-
-    // Handle timeout and other errors
     const isTimeout = error instanceof Error && error.name === "AbortError"
     const errorMsg = error instanceof Error ? error.message : "Unknown error"
 
@@ -63,17 +60,24 @@ async function checkLink(url: string, timeout = 5000): Promise<LinkResult> {
 
 async function extractLinks(htmlContent: string, baseUrl: string): Promise<string[]> {
   try {
-    const dom = new JSDOM(htmlContent, { url: baseUrl })
-    const links = Array.from(dom.window.document.querySelectorAll("a[href]"))
-      .map((el) => el.getAttribute("href"))
-      .filter((href): href is string => href !== null && href.length > 0)
+    const linkRegex = /href=["']([^"']+)["']/gi
+    const links: string[] = []
+    let match
+
+    while ((match = linkRegex.exec(htmlContent)) !== null) {
+      const href = match[1]
+      if (href && href.length > 0 && !href.startsWith("javascript:")) {
+        links.push(href)
+      }
+    }
 
     const absoluteLinks = links
       .map((link) => {
         try {
-          if (link.startsWith("http")) return link
+          if (link.startsWith("http://") || link.startsWith("https://")) return link
+          if (link.startsWith("//")) return `https:${link}`
           if (link.startsWith("/")) return new URL(link, baseUrl).href
-          if (link.startsWith("#")) return new URL(baseUrl).href
+          if (link.startsWith("#")) return baseUrl.split("#")[0]
           return new URL(link, baseUrl).href
         } catch {
           return null
@@ -81,16 +85,17 @@ async function extractLinks(htmlContent: string, baseUrl: string): Promise<strin
       })
       .filter((link): link is string => link !== null)
 
-    // Remove duplicates
     return Array.from(new Set(absoluteLinks))
-  } catch {
+  } catch (error) {
+    console.error("[v0] Link extraction error:", error)
     return []
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { url } = await req.json()
+    const body = await req.json()
+    const { url } = body
 
     if (!url || typeof url !== "string") {
       return NextResponse.json({ error: "Invalid URL provided" }, { status: 400 })
@@ -103,22 +108,53 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid URL format" }, { status: 400 })
     }
 
-    // Fetch the website
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-      redirect: "follow",
-    })
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
 
-    if (!response.ok) {
-      return NextResponse.json({ error: `Unable to fetch website. Status: ${response.status}` }, { status: 400 })
+    let htmlContent: string
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        },
+        redirect: "follow",
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        return NextResponse.json({ error: `Unable to fetch website. Status: ${response.status}` }, { status: 400 })
+      }
+
+      htmlContent = await response.text()
+    } catch (fetchError) {
+      clearTimeout(timeoutId)
+      const errorMsg =
+        fetchError instanceof Error && fetchError.name === "AbortError"
+          ? "Website fetch timeout. Please try again."
+          : fetchError instanceof Error
+            ? fetchError.message
+            : "Failed to fetch website"
+
+      return NextResponse.json({ error: errorMsg }, { status: 400 })
     }
 
-    const htmlContent = await response.text()
+    if (!htmlContent || htmlContent.length === 0) {
+      return NextResponse.json({ error: "Website returned empty content" }, { status: 400 })
+    }
 
     // Extract all links from the page
     const allLinks = await extractLinks(htmlContent, url)
+
+    if (allLinks.length === 0) {
+      return NextResponse.json({
+        url,
+        linksFound: 0,
+        linksChecked: 0,
+        links: [],
+      })
+    }
 
     const linksToCheck = allLinks.slice(0, 50)
 
@@ -143,12 +179,7 @@ export async function POST(req: NextRequest) {
     })
   } catch (error) {
     console.error("[v0] Link check error:", error)
-
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Failed to check links. Please try again later.",
-      },
-      { status: 500 },
-    )
+    const errorMsg = error instanceof Error ? error.message : "Failed to check links"
+    return NextResponse.json({ error: errorMsg }, { status: 500 })
   }
 }

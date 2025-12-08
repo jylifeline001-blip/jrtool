@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { AlertCircle, CheckCircle, Loader2, X, Zap, Link2 } from "lucide-react"
@@ -60,12 +59,22 @@ export function BrokenLinksChecker() {
         body: JSON.stringify({ url: fullUrl }),
       })
 
-      if (!res.ok) {
-        const { error } = await res.json()
-        throw new Error(error)
+      let data
+      const contentType = res.headers.get("content-type")
+
+      if (contentType && contentType.includes("application/json")) {
+        try {
+          data = await res.json()
+        } catch {
+          throw new Error("Invalid response format from server")
+        }
+      } else {
+        throw new Error("Server returned invalid response")
       }
 
-      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to check links")
+      }
 
       const linkResults = data.links || []
       setResults(linkResults)
