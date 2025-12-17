@@ -61,15 +61,19 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
 
     // 200-299: Success
     // 300-399: Redirects (considered valid, not broken)
-    // 400-499: Client errors (broken)
+    // 405: Method not allowed (resource exists, just doesn't accept HEAD/GET - valid)
+    // 400-499 (except 405): Client errors (broken)
     // 500-599: Server errors (broken)
-    const isValid = response.status >= 200 && response.status < 400
-    const isDead = response.status >= 400
+    const isValid = (response.status >= 200 && response.status < 400) || response.status === 405
+    const isDead = response.status >= 400 && response.status !== 405
 
     return {
       url,
       status: response.status,
-      statusText: response.statusText || `HTTP ${response.status}`,
+      statusText:
+        response.status === 405
+          ? "Method Not Allowed (Resource Exists)"
+          : response.statusText || `HTTP ${response.status}`,
       isValid,
       isDead,
       isError: false,
@@ -79,7 +83,6 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
     const loadTime = Date.now() - startTime
     const isTimeout = error instanceof Error && error.name === "AbortError"
 
-    // This includes CORS blocks, DNS failures, SSL errors, etc.
     return {
       url,
       status: null,
