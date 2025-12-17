@@ -31,7 +31,21 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
         signal: controller.signal,
       })
 
-      if (response.status === 405 || response.status === 404 || response.status === 403) {
+      if (response.status === 405) {
+        clearTimeout(timeoutId)
+        const loadTime = Date.now() - startTime
+        return {
+          url,
+          status: 405,
+          statusText: "Method Not Allowed (Resource Exists)",
+          isValid: true,
+          isDead: false,
+          isError: false,
+          loadTime,
+        }
+      }
+
+      if (response.status === 404 || response.status === 403) {
         try {
           response = await fetch(url, {
             method: "GET",
@@ -43,6 +57,7 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
             redirect: "follow",
             signal: controller.signal,
           })
+
           if (response.status === 405) {
             clearTimeout(timeoutId)
             const loadTime = Date.now() - startTime
@@ -72,6 +87,7 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
           redirect: "follow",
           signal: controller.signal,
         })
+
         if (response.status === 405) {
           clearTimeout(timeoutId)
           const loadTime = Date.now() - startTime
@@ -93,11 +109,6 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
     clearTimeout(timeoutId)
     const loadTime = Date.now() - startTime
 
-    // 200-299: Success
-    // 300-399: Redirects (considered valid, not broken)
-    // 405: Method not allowed (resource exists, just doesn't accept HEAD/GET - valid)
-    // 400-499 (except 405): Client errors (broken)
-    // 500-599: Server errors (broken)
     const isValid = (response.status >= 200 && response.status < 400) || response.status === 405
     const isDead = response.status >= 400 && response.status !== 405
 
