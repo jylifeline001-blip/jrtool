@@ -36,7 +36,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Hero Section */}
         <div className="mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">Web Intelligence Tools</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">Web Intelligence Tool</h2>
           <p className="text-lg text-muted-foreground">
             Monitor your domains, check SSL certificates, and validate website links in real-time.
           </p>
