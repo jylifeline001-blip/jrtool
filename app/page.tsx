@@ -15,7 +15,7 @@ export default function Home() {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-foreground">JR Tools</h1>
-                <p className="text-xs text-muted-foreground">Web Intelligence Platform</p>
+                <p className="text-xs text-muted-foreground">Mayank Choudhary</p>
               </div>
             </div>
 
@@ -120,7 +120,7 @@ export default function Home() {
             <div>
               <h4 className="font-semibold text-foreground mb-3">JR Tools</h4>
               <p className="text-sm text-muted-foreground">
-                Web intelligence platform for developers and domain managers.
+                Mayank Choudhary for developers and domain managers.
               </p>
             </div>
             <div>
