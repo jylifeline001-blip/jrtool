@@ -8,34 +8,68 @@ interface LinkResult {
   isDead: boolean
   isError: boolean
   loadTime?: number
+  foundOn?: string
 }
 
-async function checkLink(url: string, timeout = 5000): Promise<LinkResult> {
+async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
   const startTime = Date.now()
 
   try {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)
 
-    const response = await fetch(url, {
-      method: "HEAD",
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-      redirect: "follow",
-      signal: controller.signal,
-    })
+    let response
+    try {
+      response = await fetch(url, {
+        method: "HEAD",
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Accept: "*/*",
+        },
+        redirect: "follow",
+        signal: controller.signal,
+      })
+
+      if (response.status === 405 || response.status === 404 || response.status === 403) {
+        response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          },
+          redirect: "follow",
+          signal: controller.signal,
+        })
+      }
+    } catch (headError) {
+      response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        },
+        redirect: "follow",
+        signal: controller.signal,
+      })
+    }
 
     clearTimeout(timeoutId)
     const loadTime = Date.now() - startTime
 
-    const isDead = response.status >= 400
+    // 200-299: Success
+    // 300-399: Redirects (considered valid, not broken)
+    // 400-499: Client errors (broken)
+    // 500-599: Server errors (broken)
     const isValid = response.status >= 200 && response.status < 400
+    const isDead = response.status >= 400
 
     return {
       url,
       status: response.status,
-      statusText: response.statusText,
+      statusText: response.statusText || `HTTP ${response.status}`,
       isValid,
       isDead,
       isError: false,
@@ -44,12 +78,12 @@ async function checkLink(url: string, timeout = 5000): Promise<LinkResult> {
   } catch (error) {
     const loadTime = Date.now() - startTime
     const isTimeout = error instanceof Error && error.name === "AbortError"
-    const errorMsg = error instanceof Error ? error.message : "Unknown error"
 
+    // This includes CORS blocks, DNS failures, SSL errors, etc.
     return {
       url,
       status: null,
-      statusText: isTimeout ? "Timeout" : errorMsg,
+      statusText: isTimeout ? "Timeout" : "Network Error",
       isValid: false,
       isDead: false,
       isError: true,
@@ -60,16 +94,26 @@ async function checkLink(url: string, timeout = 5000): Promise<LinkResult> {
 
 async function extractLinks(htmlContent: string, baseUrl: string): Promise<string[]> {
   try {
-    const linkRegex = /href=["']([^"']+)["']/gi
+    const linkRegex = /href\s*=\s*["']([^"']+)["']/gi
     const links: string[] = []
     let match
 
     while ((match = linkRegex.exec(htmlContent)) !== null) {
       const href = match[1]
-      if (href && href.length > 0 && !href.startsWith("javascript:")) {
+      if (
+        href &&
+        href.length > 0 &&
+        !href.startsWith("javascript:") &&
+        !href.startsWith("mailto:") &&
+        !href.startsWith("tel:") &&
+        !href.startsWith("#")
+      ) {
         links.push(href)
       }
     }
+
+    const parsedBase = new URL(baseUrl)
+    const baseDomain = parsedBase.hostname
 
     const absoluteLinks = links
       .map((link) => {
@@ -77,7 +121,6 @@ async function extractLinks(htmlContent: string, baseUrl: string): Promise<strin
           if (link.startsWith("http://") || link.startsWith("https://")) return link
           if (link.startsWith("//")) return `https:${link}`
           if (link.startsWith("/")) return new URL(link, baseUrl).href
-          if (link.startsWith("#")) return baseUrl.split("#")[0]
           return new URL(link, baseUrl).href
         } catch {
           return null
@@ -85,7 +128,16 @@ async function extractLinks(htmlContent: string, baseUrl: string): Promise<strin
       })
       .filter((link): link is string => link !== null)
 
-    return Array.from(new Set(absoluteLinks))
+    const internalLinks = absoluteLinks.filter((link) => {
+      try {
+        const linkUrl = new URL(link)
+        return linkUrl.hostname === baseDomain || linkUrl.hostname.endsWith(`.${baseDomain}`)
+      } catch {
+        return false
+      }
+    })
+
+    return Array.from(new Set(internalLinks))
   } catch (error) {
     console.error("[v0] Link extraction error:", error)
     return []
@@ -109,13 +161,15 @@ export async function POST(req: NextRequest) {
     }
 
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 10000)
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     let htmlContent: string
     try {
       const response = await fetch(url, {
         headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         },
         redirect: "follow",
         signal: controller.signal,
@@ -144,7 +198,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Website returned empty content" }, { status: 400 })
     }
 
-    // Extract all links from the page
     const allLinks = await extractLinks(htmlContent, url)
 
     if (allLinks.length === 0) {
@@ -153,21 +206,22 @@ export async function POST(req: NextRequest) {
         linksFound: 0,
         linksChecked: 0,
         links: [],
+        message: "No internal links found on this page",
       })
     }
 
-    const linksToCheck = allLinks.slice(0, 50)
+    const linksToCheck = allLinks.slice(0, 100)
 
     // Check each link with rate limiting
     const results: LinkResult[] = []
     for (let i = 0; i < linksToCheck.length; i++) {
       const link = linksToCheck[i]
       const result = await checkLink(link)
+      result.foundOn = url
       results.push(result)
 
-      // Add small delay between requests to avoid overwhelming servers
       if (i < linksToCheck.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 100))
+        await new Promise((resolve) => setTimeout(resolve, 50))
       }
     }
 

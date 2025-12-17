@@ -13,6 +13,7 @@ interface LinkResult {
   isDead: boolean
   isError: boolean
   loadTime?: number
+  foundOn?: string
 }
 
 export function BrokenLinksChecker() {
@@ -160,53 +161,72 @@ export function BrokenLinksChecker() {
 
       {/* Results Table */}
       {results.length > 0 && (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left py-3 px-3 font-semibold text-foreground">URL</th>
-                <th className="text-center py-3 px-3 font-semibold text-foreground">Status</th>
-                <th className="text-center py-3 px-3 font-semibold text-foreground">Time (ms)</th>
-                <th className="text-center py-3 px-3 font-semibold text-foreground">Status Badge</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.map((link, idx) => (
-                <tr key={idx} className="border-b border-border/50 hover:bg-muted/50 transition">
-                  <td className="py-3 px-3">
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 dark:text-blue-400 hover:underline text-xs truncate block"
-                    >
-                      {link.url}
-                    </a>
-                  </td>
-                  <td className="text-center py-3 px-3 font-mono text-xs">{link.status || "N/A"}</td>
-                  <td className="text-center py-3 px-3 text-xs">{link.loadTime?.toFixed(0) || "—"}</td>
-                  <td className="text-center py-3 px-3">
-                    {link.isDead ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-medium rounded">
-                        <X className="w-3 h-3" />
-                        Broken
-                      </span>
-                    ) : link.isError ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-medium rounded">
-                        <AlertCircle className="w-3 h-3" />
-                        Error
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs font-medium rounded">
-                        <CheckCircle className="w-3 h-3" />
-                        Valid
-                      </span>
-                    )}
-                  </td>
+        <div className="space-y-3">
+          <p className="text-xs text-muted-foreground">
+            Showing internal links only. External links are not checked to avoid false positives.
+          </p>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-3 font-semibold text-foreground">URL</th>
+                  <th className="text-center py-3 px-3 font-semibold text-foreground">Status</th>
+                  <th className="text-center py-3 px-3 font-semibold text-foreground">Time (ms)</th>
+                  <th className="text-center py-3 px-3 font-semibold text-foreground">Result</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {results.map((link, idx) => (
+                  <tr key={idx} className="border-b border-border/50 hover:bg-muted/50 transition">
+                    <td className="py-3 px-3">
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-400 hover:underline text-xs break-all"
+                      >
+                        {link.url}
+                      </a>
+                    </td>
+                    <td className="text-center py-3 px-3 font-mono text-xs">{link.status || link.statusText}</td>
+                    <td className="text-center py-3 px-3 text-xs">{link.loadTime?.toFixed(0) || "—"}</td>
+                    <td className="text-center py-3 px-3">
+                      {link.isDead ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-medium rounded">
+                          <X className="w-3 h-3" />
+                          Broken
+                        </span>
+                      ) : link.isError ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-medium rounded">
+                          <AlertCircle className="w-3 h-3" />
+                          Error
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs font-medium rounded">
+                          <CheckCircle className="w-3 h-3" />
+                          Valid
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="text-xs text-muted-foreground space-y-1 bg-muted/30 p-3 rounded-lg">
+            <p className="font-semibold">Status Guide:</p>
+            <p>
+              <span className="font-medium">Valid (200-399):</span> Link works correctly, including redirects
+            </p>
+            <p>
+              <span className="font-medium">Broken (400-599):</span> Link returns client or server error
+            </p>
+            <p>
+              <span className="font-medium">Error:</span> Network issue, timeout, or blocked by security (CORS, SSL)
+            </p>
+          </div>
         </div>
       )}
 
