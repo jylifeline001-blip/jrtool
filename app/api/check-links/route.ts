@@ -11,114 +11,103 @@ interface LinkResult {
   foundOn?: string
 }
 
-async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
+async function checkLink(url: string, timeout = 10000): Promise<LinkResult> {
   const startTime = Date.now()
 
   try {
+    // Skip common non-content URLs
+    const pathname = new URL(url).pathname.toLowerCase()
+    if (
+      pathname.includes("xmlrpc.php") ||
+      pathname.includes("wp-json") ||
+      pathname.includes("wp-admin") ||
+      pathname.includes("wp-login") ||
+      pathname.includes("feed") ||
+      pathname.includes("robots.txt") ||
+      pathname.includes("sitemap")
+    ) {
+      return {
+        url,
+        status: null,
+        statusText: "Skipped (Non-content URL)",
+        isValid: true,
+        isDead: false,
+        isError: false,
+        loadTime: Date.now() - startTime,
+      }
+    }
+
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)
 
-    let response
-    try {
+    // Try HEAD request first (faster)
+    let response = await fetch(url, {
+      method: "HEAD",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept: "*/*",
+      },
+      redirect: "follow",
+      signal: controller.signal,
+    })
+
+    // If HEAD fails or returns error, try GET
+    if (response.status === 405 || response.status === 403 || response.status === 400) {
       response = await fetch(url, {
-        method: "HEAD",
+        method: "GET",
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Accept: "*/*",
+          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         },
         redirect: "follow",
         signal: controller.signal,
       })
-
-      if (response.status === 405) {
-        clearTimeout(timeoutId)
-        const loadTime = Date.now() - startTime
-        return {
-          url,
-          status: 405,
-          statusText: "Method Not Allowed (Resource Exists)",
-          isValid: true,
-          isDead: false,
-          isError: false,
-          loadTime,
-        }
-      }
-
-      if (response.status === 404 || response.status === 403) {
-        try {
-          response = await fetch(url, {
-            method: "GET",
-            headers: {
-              "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-              Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            },
-            redirect: "follow",
-            signal: controller.signal,
-          })
-
-          if (response.status === 405) {
-            clearTimeout(timeoutId)
-            const loadTime = Date.now() - startTime
-            return {
-              url,
-              status: 405,
-              statusText: "Method Not Allowed (Resource Exists)",
-              isValid: true,
-              isDead: false,
-              isError: false,
-              loadTime,
-            }
-          }
-        } catch (getError) {
-          console.log(`[v0] GET fallback failed for ${url}, using HEAD response`)
-        }
-      }
-    } catch (headError) {
-      try {
-        response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-          },
-          redirect: "follow",
-          signal: controller.signal,
-        })
-
-        if (response.status === 405) {
-          clearTimeout(timeoutId)
-          const loadTime = Date.now() - startTime
-          return {
-            url,
-            status: 405,
-            statusText: "Method Not Allowed (Resource Exists)",
-            isValid: true,
-            isDead: false,
-            isError: false,
-            loadTime,
-          }
-        }
-      } catch (getError) {
-        throw headError
-      }
     }
 
     clearTimeout(timeoutId)
     const loadTime = Date.now() - startTime
 
-    const isValid = (response.status >= 200 && response.status < 400) || response.status === 405
-    const isDead = response.status >= 400 && response.status !== 405
+    // Determine link status based on HTTP code
+    const status = response.status
+    let isValid = false
+    let isDead = false
+
+    if (status >= 200 && status < 300) {
+      // 2xx: Success
+      isValid = true
+      isDead = false
+    } else if (status >= 300 && status < 400) {
+      // 3xx: Redirect (valid - browser follows these)
+      isValid = true
+      isDead = false
+    } else if (status === 405) {
+      // 405: Method not allowed but resource exists
+      isValid = true
+      isDead = false
+    } else if (status === 401 || status === 403) {
+      // 401/403: Auth required but resource exists
+      isValid = true
+      isDead = false
+    } else if (status === 404) {
+      // 404: Not found - truly broken
+      isValid = false
+      isDead = true
+    } else if (status >= 500) {
+      // 5xx: Server error - mark as broken
+      isValid = false
+      isDead = true
+    } else {
+      // Other 4xx errors - broken
+      isValid = false
+      isDead = true
+    }
 
     return {
       url,
-      status: response.status,
-      statusText:
-        response.status === 405
-          ? "Method Not Allowed (Resource Exists)"
-          : response.statusText || `HTTP ${response.status}`,
+      status,
+      statusText: response.statusText || `HTTP ${status}`,
       isValid,
       isDead,
       isError: false,
@@ -128,6 +117,7 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
     const loadTime = Date.now() - startTime
     const isTimeout = error instanceof Error && error.name === "AbortError"
 
+    // Network errors and timeouts are not broken links, just errors
     return {
       url,
       status: null,
@@ -268,8 +258,9 @@ export async function POST(req: NextRequest) {
       result.foundOn = url
       results.push(result)
 
+      // Rate limit: 200ms between requests
       if (i < linksToCheck.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 50))
+        await new Promise((resolve) => setTimeout(resolve, 200))
       }
     }
 

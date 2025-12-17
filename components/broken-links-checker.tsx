@@ -163,7 +163,8 @@ export function BrokenLinksChecker() {
       {results.length > 0 && (
         <div className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Showing internal links only. External links are not checked to avoid false positives.
+            Checking internal links only. Status codes 200-399, 401, 403, and 405 are marked as valid. Only 404 and 5xx
+            errors are truly broken.
           </p>
 
           <div className="overflow-x-auto">
@@ -218,13 +219,16 @@ export function BrokenLinksChecker() {
           <div className="text-xs text-muted-foreground space-y-1 bg-muted/30 p-3 rounded-lg">
             <p className="font-semibold">Status Guide:</p>
             <p>
-              <span className="font-medium">Valid (200-399):</span> Link works correctly, including redirects
+              <span className="font-medium text-green-600 dark:text-green-400">Valid:</span> HTTP 200-399 (success +
+              redirects), 401/403 (auth required), 405 (method not allowed)
             </p>
             <p>
-              <span className="font-medium">Broken (400-599):</span> Link returns client or server error
+              <span className="font-medium text-red-600 dark:text-red-400">Broken:</span> HTTP 404 (not found) or 500+
+              (server error)
             </p>
             <p>
-              <span className="font-medium">Error:</span> Network issue, timeout, or blocked by security (CORS, SSL)
+              <span className="font-medium text-orange-600 dark:text-orange-400">Error:</span> Network timeout, CORS
+              block, or connection failed
             </p>
           </div>
         </div>
