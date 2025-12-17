@@ -258,7 +258,7 @@ export function DomainChecker() {
           <CardDescription>Check up to 20 domains at once. Enter one domain per line</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 line-through">
             <textarea
               value={domainsInput}
               onChange={(e) => setDomainsInput(e.target.value)}

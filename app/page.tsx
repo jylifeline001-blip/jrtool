@@ -45,7 +45,7 @@ export default function Home() {
         {/* Tools Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Domain Checker Card */}
-          <div id="domain" className="lg:col-span-1">
+          <div id="domain" className="lg:col-span-1 leading-8">
             <div className="bg-white dark:bg-slate-800 rounded-xl border border-border shadow-sm hover:shadow-md transition-shadow">
               <div className="p-6 sm:p-8">
                 <div className="flex items-center gap-3 mb-4">
