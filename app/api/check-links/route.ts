@@ -32,6 +32,36 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
       })
 
       if (response.status === 405 || response.status === 404 || response.status === 403) {
+        try {
+          response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+              Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            },
+            redirect: "follow",
+            signal: controller.signal,
+          })
+          if (response.status === 405) {
+            clearTimeout(timeoutId)
+            const loadTime = Date.now() - startTime
+            return {
+              url,
+              status: 405,
+              statusText: "Method Not Allowed (Resource Exists)",
+              isValid: true,
+              isDead: false,
+              isError: false,
+              loadTime,
+            }
+          }
+        } catch (getError) {
+          console.log(`[v0] GET fallback failed for ${url}, using HEAD response`)
+        }
+      }
+    } catch (headError) {
+      try {
         response = await fetch(url, {
           method: "GET",
           headers: {
@@ -42,18 +72,22 @@ async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
           redirect: "follow",
           signal: controller.signal,
         })
+        if (response.status === 405) {
+          clearTimeout(timeoutId)
+          const loadTime = Date.now() - startTime
+          return {
+            url,
+            status: 405,
+            statusText: "Method Not Allowed (Resource Exists)",
+            isValid: true,
+            isDead: false,
+            isError: false,
+            loadTime,
+          }
+        }
+      } catch (getError) {
+        throw headError
       }
-    } catch (headError) {
-      response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        },
-        redirect: "follow",
-        signal: controller.signal,
-      })
     }
 
     clearTimeout(timeoutId)
