@@ -5,34 +5,38 @@ interface LinkResult {
   status: number | null
   statusText: string
   isValid: boolean
-  isDead: boolean
-  isError: boolean
+  isBroken: boolean
+  category: "success" | "broken" | "warning" | "skipped"
   loadTime?: number
   foundOn?: string
 }
 
-async function checkLink(url: string, timeout = 10000): Promise<LinkResult> {
+async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
   const startTime = Date.now()
 
   try {
-    // Skip common non-content URLs
     const pathname = new URL(url).pathname.toLowerCase()
-    if (
-      pathname.includes("xmlrpc.php") ||
-      pathname.includes("wp-json") ||
-      pathname.includes("wp-admin") ||
-      pathname.includes("wp-login") ||
-      pathname.includes("feed") ||
-      pathname.includes("robots.txt") ||
-      pathname.includes("sitemap")
-    ) {
+    const skipPatterns = [
+      "xmlrpc.php",
+      "wp-json",
+      "wp-admin",
+      "wp-login",
+      "wp-content",
+      "/feed",
+      "/rss",
+      "robots.txt",
+      "sitemap.xml",
+      ".xml",
+    ]
+
+    if (skipPatterns.some((pattern) => pathname.includes(pattern))) {
       return {
         url,
         status: null,
-        statusText: "Skipped (Non-content URL)",
+        statusText: "Skipped",
         isValid: true,
-        isDead: false,
-        isError: false,
+        isBroken: false,
+        category: "skipped",
         loadTime: Date.now() - startTime,
       }
     }
@@ -40,68 +44,52 @@ async function checkLink(url: string, timeout = 10000): Promise<LinkResult> {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)
 
-    // Try HEAD request first (faster)
-    let response = await fetch(url, {
-      method: "HEAD",
+    const response = await fetch(url, {
+      method: "GET",
       headers: {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "*/*",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cache-Control": "no-cache",
       },
       redirect: "follow",
       signal: controller.signal,
     })
 
-    // If HEAD fails or returns error, try GET
-    if (response.status === 405 || response.status === 403 || response.status === 400) {
-      response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        },
-        redirect: "follow",
-        signal: controller.signal,
-      })
-    }
-
     clearTimeout(timeoutId)
     const loadTime = Date.now() - startTime
-
-    // Determine link status based on HTTP code
     const status = response.status
+
     let isValid = false
-    let isDead = false
+    let isBroken = false
+    let category: "success" | "broken" | "warning" | "skipped"
 
     if (status >= 200 && status < 300) {
-      // 2xx: Success
+      // Success
       isValid = true
-      isDead = false
+      isBroken = false
+      category = "success"
     } else if (status >= 300 && status < 400) {
-      // 3xx: Redirect (valid - browser follows these)
+      // Redirects are valid
       isValid = true
-      isDead = false
-    } else if (status === 405) {
-      // 405: Method not allowed but resource exists
-      isValid = true
-      isDead = false
-    } else if (status === 401 || status === 403) {
-      // 401/403: Auth required but resource exists
-      isValid = true
-      isDead = false
+      isBroken = false
+      category = "success"
     } else if (status === 404) {
-      // 404: Not found - truly broken
+      // Page not found - truly broken
       isValid = false
-      isDead = true
+      isBroken = true
+      category = "broken"
     } else if (status >= 500) {
-      // 5xx: Server error - mark as broken
+      // Server errors - broken
       isValid = false
-      isDead = true
+      isBroken = true
+      category = "broken"
     } else {
-      // Other 4xx errors - broken
+      // Other 4xx - warnings (auth required, forbidden, etc.)
       isValid = false
-      isDead = true
+      isBroken = false
+      category = "warning"
     }
 
     return {
@@ -109,22 +97,21 @@ async function checkLink(url: string, timeout = 10000): Promise<LinkResult> {
       status,
       statusText: response.statusText || `HTTP ${status}`,
       isValid,
-      isDead,
-      isError: false,
+      isBroken,
+      category,
       loadTime,
     }
   } catch (error) {
     const loadTime = Date.now() - startTime
     const isTimeout = error instanceof Error && error.name === "AbortError"
 
-    // Network errors and timeouts are not broken links, just errors
     return {
       url,
       status: null,
       statusText: isTimeout ? "Timeout" : "Network Error",
       isValid: false,
-      isDead: false,
-      isError: true,
+      isBroken: false,
+      category: "warning",
       loadTime,
     }
   }
@@ -191,7 +178,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid URL provided" }, { status: 400 })
     }
 
-    // Validate URL format
     try {
       new URL(url)
     } catch {
@@ -250,7 +236,6 @@ export async function POST(req: NextRequest) {
 
     const linksToCheck = allLinks.slice(0, 100)
 
-    // Check each link with rate limiting
     const results: LinkResult[] = []
     for (let i = 0; i < linksToCheck.length; i++) {
       const link = linksToCheck[i]
@@ -258,9 +243,9 @@ export async function POST(req: NextRequest) {
       result.foundOn = url
       results.push(result)
 
-      // Rate limit: 200ms between requests
+      // Rate limit: 100ms between requests
       if (i < linksToCheck.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 200))
+        await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }
 
