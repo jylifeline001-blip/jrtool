@@ -41,8 +41,29 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-sans antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const observer = new MutationObserver((mutations) => {
+                  mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes') {
+                      const attr = mutation.attributeName;
+                      if (attr === 'bis_skin_checked' || attr === 'contenteditable') {
+                        mutation.target.removeAttribute(attr);
+                      }
+                    }
+                  });
+                });
+                observer.observe(document.documentElement, { attributes: true, subtree: true });
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className={`font-sans antialiased`} suppressHydrationWarning>
         {children}
         <Analytics />
       </body>

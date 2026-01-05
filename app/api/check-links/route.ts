@@ -1,263 +1,208 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { JSDOM } from "jsdom"
 
-interface LinkResult {
+export const maxDuration = 60
+
+interface LinkCheckResult {
   url: string
   status: number | null
   statusText: string
-  isValid: boolean
   isBroken: boolean
-  category: "success" | "broken" | "warning" | "skipped"
-  loadTime?: number
-  foundOn?: string
+  errorType: string
+  foundOn: string
 }
 
-async function checkLink(url: string, timeout = 8000): Promise<LinkResult> {
-  const startTime = Date.now()
+interface PageData {
+  url: string
+  links: string[]
+}
 
+async function fetchSitemap(baseUrl: string): Promise<string[]> {
   try {
-    const pathname = new URL(url).pathname.toLowerCase()
-    const skipPatterns = [
-      "xmlrpc.php",
-      "wp-json",
-      "wp-admin",
-      "wp-login",
-      "wp-content",
-      "/feed",
-      "/rss",
-      "robots.txt",
-      "sitemap.xml",
-      ".xml",
-    ]
-
-    if (skipPatterns.some((pattern) => pathname.includes(pattern))) {
-      return {
-        url,
-        status: null,
-        statusText: "Skipped",
-        isValid: true,
-        isBroken: false,
-        category: "skipped",
-        loadTime: Date.now() - startTime,
+    const sitemapUrl = new URL("/sitemap.xml", baseUrl).href
+    const res = await fetch(sitemapUrl, { signal: AbortSignal.timeout(4000) })
+    if (!res.ok) return []
+    const text = await res.text()
+    const regex = /<loc>(.*?)<\/loc>/g
+    const urls: string[] = []
+    let match
+    while ((match = regex.exec(text)) !== null) {
+      const foundUrl = match[1].trim()
+      if (!foundUrl.endsWith(".xml") && !foundUrl.includes("/wp-admin/") && !foundUrl.includes("/login")) {
+        urls.push(foundUrl)
       }
     }
+    return urls
+  } catch {
+    return []
+  }
+}
 
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), timeout)
-
-    const response = await fetch(url, {
-      method: "GET",
+async function getLinksFromPage(url: string, baseOrigin: string): Promise<PageData> {
+  try {
+    const res = await fetch(url, {
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Cache-Control": "no-cache",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       },
-      redirect: "follow",
-      signal: controller.signal,
+      signal: AbortSignal.timeout(8000)
     })
 
-    clearTimeout(timeoutId)
-    const loadTime = Date.now() - startTime
-    const status = response.status
+    if (!res.ok) return { url, links: [] }
+    const text = await res.text()
+    const dom = new JSDOM(text, { url })
+    const document = dom.window.document
+    const anchors = Array.from(document.querySelectorAll("a"))
 
-    let isValid = false
+    const links = anchors
+      .map(a => a.href)
+      .filter(href => {
+        if (!href || href === "#") return false
+        if (href.startsWith("javascript:") || href.startsWith("mailto:") || href.startsWith("tel:")) return false
+        const lower = href.toLowerCase()
+        if (lower.includes("/login") || lower.includes("/admin") || lower.includes("/wp-login") || lower.includes("/wp-admin")) return false
+        return true
+      })
+      .map(href => {
+        try {
+          // Flatten URLs by removing fragments
+          const urlObj = new URL(href, url)
+          urlObj.hash = ""
+          return urlObj.href
+        } catch {
+          return ""
+        }
+      })
+      .filter(h => h !== "")
+
+    return { url, links: Array.from(new Set(links)) }
+  } catch {
+    return { url, links: [] }
+  }
+}
+
+async function validateLink(url: string, foundOn: string): Promise<LinkCheckResult> {
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; BrokenLinkChecker/3.0; +https://jr-tools.com)",
+      },
+      signal: AbortSignal.timeout(10000),
+      redirect: "follow"
+    })
+
+    const status = res.status
     let isBroken = false
-    let category: "success" | "broken" | "warning" | "skipped"
+    let errorType = "Clean"
 
-    if (status >= 200 && status < 300) {
-      // Success
-      isValid = true
-      isBroken = false
-      category = "success"
-    } else if (status >= 300 && status < 400) {
-      // Redirects are valid
-      isValid = true
-      isBroken = false
-      category = "success"
-    } else if (status === 404) {
-      // Page not found - truly broken
-      isValid = false
+    if (status === 404) {
       isBroken = true
-      category = "broken"
+      errorType = "404 Not Found"
+    } else if (status === 410) {
+      isBroken = true
+      errorType = "410 Gone"
     } else if (status >= 500) {
-      // Server errors - broken
-      isValid = false
       isBroken = true
-      category = "broken"
-    } else {
-      // Other 4xx - warnings (auth required, forbidden, etc.)
-      isValid = false
+      errorType = `${status} Server Error`
+    } else if (status >= 200 && status < 400) {
       isBroken = false
-      category = "warning"
+      errorType = "Clean"
+    } else {
+      isBroken = false
+      errorType = "Security/Blocked"
     }
 
     return {
       url,
       status,
-      statusText: response.statusText || `HTTP ${status}`,
-      isValid,
+      statusText: res.statusText || `HTTP ${status}`,
       isBroken,
-      category,
-      loadTime,
+      errorType,
+      foundOn
     }
-  } catch (error) {
-    const loadTime = Date.now() - startTime
-    const isTimeout = error instanceof Error && error.name === "AbortError"
+  } catch (error: any) {
+    const errorMsg = error?.message?.toLowerCase() || ""
+    let errorType = "Network Error"
+    let isBroken = true
+
+    if (error.name === "AbortError" || errorMsg.includes("timeout")) {
+      errorType = "Timeout"
+    } else if (errorMsg.includes("enotfound") || errorMsg.includes("dns")) {
+      errorType = "DNS Error"
+    } else if (errorMsg.includes("cert") || errorMsg.includes("ssl") || errorMsg.includes("tls")) {
+      errorType = "SSL Error"
+    } else {
+      isBroken = false
+    }
 
     return {
       url,
-      status: null,
-      statusText: isTimeout ? "Timeout" : "Network Error",
-      isValid: false,
-      isBroken: false,
-      category: "warning",
-      loadTime,
+      status: 0,
+      statusText: "Failed",
+      isBroken,
+      errorType,
+      foundOn
     }
-  }
-}
-
-async function extractLinks(htmlContent: string, baseUrl: string): Promise<string[]> {
-  try {
-    const linkRegex = /href\s*=\s*["']([^"']+)["']/gi
-    const links: string[] = []
-    let match
-
-    while ((match = linkRegex.exec(htmlContent)) !== null) {
-      const href = match[1]
-      if (
-        href &&
-        href.length > 0 &&
-        !href.startsWith("javascript:") &&
-        !href.startsWith("mailto:") &&
-        !href.startsWith("tel:") &&
-        !href.startsWith("#")
-      ) {
-        links.push(href)
-      }
-    }
-
-    const parsedBase = new URL(baseUrl)
-    const baseDomain = parsedBase.hostname
-
-    const absoluteLinks = links
-      .map((link) => {
-        try {
-          if (link.startsWith("http://") || link.startsWith("https://")) return link
-          if (link.startsWith("//")) return `https:${link}`
-          if (link.startsWith("/")) return new URL(link, baseUrl).href
-          return new URL(link, baseUrl).href
-        } catch {
-          return null
-        }
-      })
-      .filter((link): link is string => link !== null)
-
-    const internalLinks = absoluteLinks.filter((link) => {
-      try {
-        const linkUrl = new URL(link)
-        return linkUrl.hostname === baseDomain || linkUrl.hostname.endsWith(`.${baseDomain}`)
-      } catch {
-        return false
-      }
-    })
-
-    return Array.from(new Set(internalLinks))
-  } catch (error) {
-    console.error("[v0] Link extraction error:", error)
-    return []
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
-    const { url } = body
+    const { url } = await req.json()
+    if (!url) return NextResponse.json({ error: "URL is required" }, { status: 400 })
 
-    if (!url || typeof url !== "string") {
-      return NextResponse.json({ error: "Invalid URL provided" }, { status: 400 })
-    }
+    let targetUrl = url.trim()
+    if (!targetUrl.startsWith("http")) targetUrl = `https://${targetUrl}`
 
-    try {
-      new URL(url)
-    } catch {
-      return NextResponse.json({ error: "Invalid URL format" }, { status: 400 })
-    }
+    const baseOrigin = new URL(targetUrl).origin
 
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 15000)
+    // 1. IMPROVED PAGE DISCOVERY
+    let discoveredPages = new Set<string>([targetUrl])
 
-    let htmlContent: string
-    try {
-      const response = await fetch(url, {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        },
-        redirect: "follow",
-        signal: controller.signal,
-      })
+    // Try Sitemap first
+    const sitemapPages = await fetchSitemap(targetUrl)
+    sitemapPages.forEach(p => discoveredPages.add(p))
 
-      clearTimeout(timeoutId)
-
-      if (!response.ok) {
-        return NextResponse.json({ error: `Unable to fetch website. Status: ${response.status}` }, { status: 400 })
-      }
-
-      htmlContent = await response.text()
-    } catch (fetchError) {
-      clearTimeout(timeoutId)
-      const errorMsg =
-        fetchError instanceof Error && fetchError.name === "AbortError"
-          ? "Website fetch timeout. Please try again."
-          : fetchError instanceof Error
-            ? fetchError.message
-            : "Failed to fetch website"
-
-      return NextResponse.json({ error: errorMsg }, { status: 400 })
-    }
-
-    if (!htmlContent || htmlContent.length === 0) {
-      return NextResponse.json({ error: "Website returned empty content" }, { status: 400 })
-    }
-
-    const allLinks = await extractLinks(htmlContent, url)
-
-    if (allLinks.length === 0) {
-      return NextResponse.json({
-        url,
-        linksFound: 0,
-        linksChecked: 0,
-        links: [],
-        message: "No internal links found on this page",
+    // If sitemap is sparse, crawl home + 1 level
+    if (discoveredPages.size < 5) {
+      const homeData = await getLinksFromPage(targetUrl, baseOrigin)
+      homeData.links.forEach(l => {
+        if (l.startsWith(baseOrigin)) discoveredPages.add(l)
       })
     }
 
-    const linksToCheck = allLinks.slice(0, 100)
+    // Limit crawl to 40 pages to stay within 60s timeout
+    const pagesToCrawl = Array.from(discoveredPages).slice(0, 40)
 
-    const results: LinkResult[] = []
-    for (let i = 0; i < linksToCheck.length; i++) {
-      const link = linksToCheck[i]
-      const result = await checkLink(link)
-      result.foundOn = url
-      results.push(result)
+    // 2. Multiphase extraction
+    const pageResults = await Promise.all(pagesToCrawl.map(p => getLinksFromPage(p, baseOrigin)))
+    const linkToPageMap = new Map<string, string>()
+    pageResults.forEach(p => {
+      p.links.forEach(l => {
+        if (!linkToPageMap.has(l)) linkToPageMap.set(l, p.url)
+      })
+    })
 
-      // Rate limit: 100ms between requests
-      if (i < linksToCheck.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 100))
-      }
+    const uniqueLinks = Array.from(linkToPageMap.keys()).slice(0, 200)
+
+    // 3. Batch Validation
+    const results: LinkCheckResult[] = []
+    const BATCH_SIZE = 25
+    for (let i = 0; i < uniqueLinks.length; i += BATCH_SIZE) {
+      const batch = uniqueLinks.slice(i, i + BATCH_SIZE)
+      const batchResults = await Promise.all(
+        batch.map(l => validateLink(l, linkToPageMap.get(l)!))
+      )
+      results.push(...batchResults.filter(r => r.isBroken))
     }
 
     return NextResponse.json({
-      url,
-      linksFound: allLinks.length,
-      linksChecked: linksToCheck.length,
-      links: results,
+      totalPagesCrawled: pagesToCrawl.length,
+      totalLinksChecked: uniqueLinks.length,
+      results
     })
-  } catch (error) {
-    console.error("[v0] Link check error:", error)
-    const errorMsg = error instanceof Error ? error.message : "Failed to check links"
-    return NextResponse.json({ error: errorMsg }, { status: 500 })
+
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

@@ -1,7 +1,7 @@
-[00:00:02.857] Server  LOG      ✓ Ready in 1991ms
-[00:00:05.916] Server  LOG      ○ Compiling / ...
-[00:00:14.248] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:15.340] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+[00:00:07.744] Server  LOG      ✓ Ready in 5.4s
+[00:00:15.135] Server  LOG      ○ Compiling / ...
+[00:00:36.867] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:37.438] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
 
 - A server/client branch `if (typeof window !== 'undefined')`.
 - Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
@@ -30,50 +30,255 @@ It can also happen if the client has a browser extension installed which messes 
 -                       bis_skin_checked="1"
                       >
                     ...
-                  <__next_root_layout_boundary__>
-                    <SegmentViewNode type="layout" pagePath="layout.tsx">
-                      <SegmentTrieNode>
-                      <link>
-                      <script>
-                      <script>
-                      <RootLayout>
-                        <html lang="en">
-                          <body
-                            className="font-sans antialiased"
--                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
--                           __processed_8d5ca690-599f-4dad-aec6-bfc429326bd9__="true"
--                           contenteditable="false"
--                           data-new-gr-c-s-check-loaded="14.1266.0"
--                           data-gr-ext-installed=""
-                          >
-                            ...
-                              <SegmentViewNode type="page" pagePath="page.tsx">
-                                <SegmentTrieNode>
-                                <Home>
-                                  <main className="min-h-scre...">
-                                    <header className="sticky top...">
+                  ...
+                    <RedirectBoundary>
+                      <RedirectErrorBoundary router={{...}}>
+                        <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+                          <SegmentViewNode type="page" pagePath="page.tsx">
+                            <SegmentTrieNode>
+                            <Home>
+                              <main className="min-h-scre...">
+                                <SiteHeader>
+                                  <header className="sticky top...">
+                                    <div
+                                      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+-                                     bis_skin_checked="1"
+                                    >
                                       <div
-                                        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                                        className="flex items-center justify-between h-16"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <LinkComponent>
+                                          <LinkComponent href="/" className="flex items...">
+                                            <a
+                                              className="flex items-center gap-3 group"
+                                              ref={function}
+                                              onClick={function onClick}
+                                              onMouseEnter={function onMouseEnter}
+                                              onTouchStart={function onTouchStart}
+                                              href="/"
+-                                             contenteditable="false"
+-                                             style={{cursor:"pointer"}}
+                                            >
+                                              <div
+                                                className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 round..."
+-                                               bis_skin_checked="1"
+                                              >
++                                               JR
+                                              <div
+                                                className="hidden sm:block"
+-                                               bis_skin_checked="1"
+                                              >
+                                        <nav className="hidden md:...">
+                                          <LinkComponent>
+                                            <LinkComponent href="/#domain" className="hover:text...">
+                                              <a
+                                                className="hover:text-foreground transition"
+                                                ref={function}
+                                                onClick={function onClick}
+                                                onMouseEnter={function onMouseEnter}
+                                                onTouchStart={function onTouchStart}
+                                                href="/#domain"
+-                                               contenteditable="false"
+-                                               style={{cursor:"pointer"}}
+                                              >
++                                               Domain Checker
+                                          <LinkComponent>
+                                            <LinkComponent href="/#links" className="hover:text...">
+                                              <a
+                                                className="hover:text-foreground transition"
+                                                ref={function}
+                                                onClick={function onClick}
+                                                onMouseEnter={function onMouseEnter}
+                                                onTouchStart={function onTouchStart}
+                                                href="/#links"
+-                                               contenteditable="false"
+-                                               style={{cursor:"pointer"}}
+                                              >
++                                               Link Checker
+                                          <LinkComponent>
+                                            <LinkComponent href="/health-ch...">
+                                              <a
+                                                ref={function}
+                                                onClick={function onClick}
+                                                onMouseEnter={function onMouseEnter}
+                                                onTouchStart={function onTouchStart}
+                                                href="/health-checker"
+-                                               contenteditable="false"
+-                                               style={{cursor:"pointer"}}
+                                              >
+                                <div
+                                  className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12"
+-                                 bis_skin_checked="1"
+                                >
+                                  <div
+                                    className="mb-12"
+-                                   bis_skin_checked="1"
+                                  >
+                                  <div
+                                    className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <div
+                                      id="domain"
+                                      className="lg:col-span-1 leading-8"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="bg-white dark:bg-slate-800 rounded-xl border border-border shadow-s..."
 -                                       bis_skin_checked="1"
                                       >
                                         <div
-                                          className="flex items-center justify-between h-16"
+                                          className="p-6 sm:p-8"
 -                                         bis_skin_checked="1"
                                         >
                                           <div
-                                            className="flex items-center gap-3"
+                                            className="flex items-center gap-3 mb-4"
 -                                           bis_skin_checked="1"
                                           >
                                             <div
-                                              className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded..."
+                                              className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg"
 -                                             bis_skin_checked="1"
                                             >
-+                                             JR
+                                            ...
+                                          ...
+                                        <div
+                                          className="px-6 sm:px-8 pb-6 sm:pb-8"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <DomainChecker>
                                             <div
-                                              className="hidden sm:block"
+                                              className="space-y-8"
 -                                             bis_skin_checked="1"
                                             >
-                                          <nav className="hidden md:...">
+                                              <Card>
+                                                <div
+                                                  data-slot="card"
+                                                  className="bg-card text-card-foreground flex flex-col gap-6 rounded-..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <CardHeader>
+                                                    <div
+                                                      data-slot="card-header"
+                                                      className="@container/card-header grid auto-rows-min grid-rows-[..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <CardTitle>
+                                                        <div
+                                                          data-slot="card-title"
+                                                          className="leading-none font-semibold"
+-                                                         bis_skin_checked="1"
+                                                        >
++                                                         Multi-Domain Expiry Checker
+                                                      <CardDescription>
+                                                        <div
+                                                          data-slot="card-description"
+                                                          className="text-muted-foreground text-sm"
+-                                                         bis_skin_checked="1"
+                                                        >
++                                                         Check up to 20 domains at once. Enter one domain per line
+                                                  <CardContent>
+                                                    <div
+                                                      data-slot="card-content"
+                                                      className="px-6"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <form onSubmit={function handleSubmit} className="space-y-4">
+                                                        <textarea>
+                                                        <div
+                                                          className="flex gap-2 flex-wrap"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                    <div
+                                      id="links"
+                                      className="lg:col-span-1"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="bg-white dark:bg-slate-800 rounded-xl border border-border shadow-s..."
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="p-6 sm:p-8"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="flex items-center gap-3 mb-4"
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg"
+-                                             bis_skin_checked="1"
+                                            >
+                                            ...
+                                          ...
+                                        <div
+                                          className="px-6 sm:px-8 pb-6 sm:pb-8"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <BrokenLinksChecker>
+                                            <div
+                                              className="space-y-6"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <form onSubmit={function handleCheck} className="space-y-3">
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                              <div
+                                                className="text-center py-8"
+-                                               bis_skin_checked="1"
+                                              >
+                                  <div
+                                    className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-8"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <div
+                                      className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-border text-c..."
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="inline-flex p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-2"
+-                                       bis_skin_checked="1"
+                                      >
+                                      ...
+                                    <div
+                                      className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-border text-c..."
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="inline-flex p-2 bg-green-100 dark:bg-green-900/30 rounded-lg mb-2"
+-                                       bis_skin_checked="1"
+                                      >
+                                      ...
+                                    <div
+                                      className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-border text-c..."
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="inline-flex p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg mb-2"
+-                                       bis_skin_checked="1"
+                                      >
+                                      ...
+                                <footer className="border-t b...">
+                                  <div
+                                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <div
+                                      className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+-                                       bis_skin_checked="1"
+                                      >
+                                      <div
+-                                       bis_skin_checked="1"
+                                      >
+                                        <h4>
+                                        <ul className="space-y-1 ...">
+                                          <li>
                                             <a
                                               href="#domain"
                                               className="hover:text-foreground transition"
@@ -81,211 +286,165 @@ It can also happen if the client has a browser extension installed which messes 
 -                                             style={{cursor:"pointer"}}
                                             >
 +                                             Domain Checker
+                                          <li>
                                             <a
                                               href="#links"
                                               className="hover:text-foreground transition"
 -                                             contenteditable="false"
 -                                             style={{cursor:"pointer"}}
                                             >
-+                                             Link Checker
++                                             Link Validator
+                                      <div
+-                                       bis_skin_checked="1"
+                                      >
                                     <div
-                                      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12"
+                                      className="border-t border-border/50 pt-6 text-center text-sm text-muted-foreground"
 -                                     bis_skin_checked="1"
                                     >
-                                      <div
-                                        className="mb-12"
--                                       bis_skin_checked="1"
-                                      >
-                                      <div
-                                        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
--                                       bis_skin_checked="1"
-                                      >
-                                        <div
-                                          id="domain"
-                                          className="lg:col-span-1 leading-8"
--                                         bis_skin_checked="1"
-                                        >
-                                          <div
-                                            className="bg-white dark:bg-slate-800 rounded-xl border border-border shad..."
--                                           bis_skin_checked="1"
-                                          >
-                                            <div
-                                              className="p-6 sm:p-8"
--                                             bis_skin_checked="1"
-                                            >
-                                              <div
-                                                className="flex items-center gap-3 mb-4"
--                                               bis_skin_checked="1"
-                                              >
-                                                <div
-                                                  className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg"
--                                                 bis_skin_checked="1"
-                                                >
-                                                ...
-                                              ...
-                                            <div
-                                              className="px-6 sm:px-8 pb-6 sm:pb-8"
--                                             bis_skin_checked="1"
-                                            >
-                                              <DomainChecker>
-                                                <div
-                                                  className="space-y-8"
--                                                 bis_skin_checked="1"
-                                                >
-                                                  <Card>
-                                                    <div
-                                                      data-slot="card"
-                                                      className="bg-card text-card-foreground flex flex-col gap-6 roun..."
--                                                     bis_skin_checked="1"
-                                                    >
-                                                      <CardHeader>
-                                                        <div
-                                                          data-slot="card-header"
-                                                          className="@container/card-header grid auto-rows-min grid-ro..."
--                                                         bis_skin_checked="1"
-                                                        >
-                                                          <CardTitle>
-                                                            <div
-                                                              data-slot="card-title"
-                                                              className="leading-none font-semibold"
--                                                             bis_skin_checked="1"
-                                                            >
-+                                                             Multi-Domain Expiry Checker
-                                                          <CardDescription>
-                                                            <div
-                                                              data-slot="card-description"
-                                                              className="text-muted-foreground text-sm"
--                                                             bis_skin_checked="1"
-                                                            >
-+                                                             Check up to 20 domains at once. Enter one domain per line
-                                                      <CardContent>
-                                                        <div
-                                                          data-slot="card-content"
-                                                          className="px-6"
--                                                         bis_skin_checked="1"
-                                                        >
-                                                          <form onSubmit={function handleSubmit} ...>
-                                                            <textarea>
-                                                            <div
-                                                              className="flex gap-2 flex-wrap"
--                                                             bis_skin_checked="1"
-                                                            >
-                                        <div
-                                          id="links"
-                                          className="lg:col-span-1"
--                                         bis_skin_checked="1"
-                                        >
-                                          <div
-                                            className="bg-white dark:bg-slate-800 rounded-xl border border-border shad..."
--                                           bis_skin_checked="1"
-                                          >
-                                            <div
-                                              className="p-6 sm:p-8"
--                                             bis_skin_checked="1"
-                                            >
-                                              <div
-                                                className="flex items-center gap-3 mb-4"
--                                               bis_skin_checked="1"
-                                              >
-                                                <div
-                                                  className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg"
--                                                 bis_skin_checked="1"
-                                                >
-                                                ...
-                                              ...
-                                            <div
-                                              className="px-6 sm:px-8 pb-6 sm:pb-8"
--                                             bis_skin_checked="1"
-                                            >
-                                              <BrokenLinksChecker>
-                                                <div
-                                                  className="space-y-6"
--                                                 bis_skin_checked="1"
-                                                >
-                                                  <form onSubmit={function handleCheck} className="space-y-3">
-                                                    <div
--                                                     bis_skin_checked="1"
-                                                    >
-                                                    ...
-                                                  <div
-                                                    className="text-center py-8"
--                                                   bis_skin_checked="1"
-                                                  >
-                                      <div
-                                        className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-8"
--                                       bis_skin_checked="1"
-                                      >
-                                        <div
-                                          className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-border te..."
--                                         bis_skin_checked="1"
-                                        >
-                                          <div
-                                            className="inline-flex p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg mb-2"
--                                           bis_skin_checked="1"
-                                          >
-                                          ...
-                                        <div
-                                          className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-border te..."
--                                         bis_skin_checked="1"
-                                        >
-                                          <div
-                                            className="inline-flex p-2 bg-green-100 dark:bg-green-900/30 rounded-lg mb-2"
--                                           bis_skin_checked="1"
-                                          >
-                                          ...
-                                        <div
-                                          className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-border te..."
--                                         bis_skin_checked="1"
-                                        >
-                                          <div
-                                            className="inline-flex p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg ..."
--                                           bis_skin_checked="1"
-                                          >
-                                          ...
-                                    <footer className="border-t b...">
-                                      <div
-                                        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
--                                       bis_skin_checked="1"
-                                      >
-                                        <div
-                                          className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8"
--                                         bis_skin_checked="1"
-                                        >
-                                          <div
--                                           bis_skin_checked="1"
-                                          >
-                                          <div
--                                           bis_skin_checked="1"
-                                          >
-                                            <h4>
-                                            <ul className="space-y-1 ...">
-                                              <li>
-                                                <a
-                                                  href="#domain"
-                                                  className="hover:text-foreground transition"
--                                                 contenteditable="false"
--                                                 style={{cursor:"pointer"}}
-                                                >
-+                                                 Domain Checker
-                                              <li>
-                                                <a
-                                                  href="#links"
-                                                  className="hover:text-foreground transition"
--                                                 contenteditable="false"
--                                                 style={{cursor:"pointer"}}
-                                                >
-+                                                 Link Validator
-                                          <div
--                                           bis_skin_checked="1"
-                                          >
-                                        <div
-                                          className="border-t border-border/50 pt-6 text-center text-sm text-muted-for..."
--                                         bis_skin_checked="1"
-                                        >
-                              ...
-                            ...
+                          ...
+                        ...
                   ...
 
-[00:00:15.340] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:15.340] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/[dgdfgf]"}
-[00:00:15.340] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/?dgdfgf color: rgb(120, 120, 120) color: inherit {"dp":"/[dgdfgf]","o":"http://localhost:3000/?dgdfgf","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1765973006292}
+[00:00:37.438] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:00:37.438] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
+[00:00:37.439] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767606776668}
+[00:02:41.083] Server  LOG      ✓ Compiled in 186ms
+[00:03:11.376] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767606930605}
+[00:03:11.376] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767606930609}
+[00:03:34.779] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/health-checker color: rgb(120, 120, 120) color: inherit {"dp":"/health-checker","o":"http://localhost:3000/health-checker","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767606954020}
+[00:11:20.267] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:11:20.583] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <LoadingBoundary name="/" loading={null}>
+      <HTTPAccessFallbackBoundary notFound={<SegmentViewNode>} forbidden={undefined} unauthorized={undefined}>
+        <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<SegmentViewNode>} forbidden={undefined} ...>
+          <RedirectBoundary>
+            <RedirectErrorBoundary router={{...}}>
+              <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} segmentPath={[...]} ...>
+                <SegmentViewNode type="page" pagePath="page.tsx">
+                  <SegmentTrieNode>
+                  <Home>
+                    <main className="min-h-scre..." suppressHydrationWarning={true}>
+                      <SiteHeader>
+                        <header className="sticky top..." suppressHydrationWarning={true}>
+                          <div className="max-w-7xl ...">
+                            <div className="flex items...">
+                              <LinkComponent>
+                                <LinkComponent href="/" className="flex items...">
+                                  <a
+                                    className="flex items-center gap-3 group"
+                                    ref={function}
+                                    onClick={function onClick}
+                                    onMouseEnter={function onMouseEnter}
+                                    onTouchStart={function onTouchStart}
+                                    href="/"
+-                                   contenteditable="false"
+-                                   style={{cursor:"pointer"}}
+                                  >
+                              <nav className="hidden md:...">
+                                <LinkComponent>
+                                  <LinkComponent href="/#domain" className="hover:text...">
+                                    <a
+                                      className="hover:text-foreground transition"
+                                      ref={function}
+                                      onClick={function onClick}
+                                      onMouseEnter={function onMouseEnter}
+                                      onTouchStart={function onTouchStart}
+                                      href="/#domain"
+-                                     contenteditable="false"
+-                                     style={{cursor:"pointer"}}
+                                    >
++                                     Domain Checker
+                                <LinkComponent>
+                                  <LinkComponent href="/#links" className="hover:text...">
+                                    <a
+                                      className="hover:text-foreground transition"
+                                      ref={function}
+                                      onClick={function onClick}
+                                      onMouseEnter={function onMouseEnter}
+                                      onTouchStart={function onTouchStart}
+                                      href="/#links"
+-                                     contenteditable="false"
+-                                     style={{cursor:"pointer"}}
+                                    >
++                                     Link Checker
+                                <LinkComponent>
+                                  <LinkComponent href="/health-ch...">
+                                    <a
+                                      ref={function}
+                                      onClick={function onClick}
+                                      onMouseEnter={function onMouseEnter}
+                                      onTouchStart={function onTouchStart}
+                                      href="/health-checker"
+-                                     contenteditable="false"
+-                                     style={{cursor:"pointer"}}
+                                    >
+                      <div>
+                      <footer className="border-t b...">
+                        <div className="max-w-7xl ...">
+                          <div className="grid grid-...">
+                            <div>
+                            <div>
+                              <h4>
+                              <ul className="space-y-1 ...">
+                                <li>
+                                  <a
+                                    href="#domain"
+                                    className="hover:text-foreground transition"
+-                                   contenteditable="false"
+-                                   style={{cursor:"pointer"}}
+                                  >
++                                   Domain Checker
+                                <li>
+                                  <a
+                                    href="#links"
+                                    className="hover:text-foreground transition"
+-                                   contenteditable="false"
+-                                   style={{cursor:"pointer"}}
+                                  >
++                                   Link Validator
+                            ...
+                          ...
+                ...
+              ...
+
+[00:11:20.704] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:11:20.704] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
+[00:11:20.704] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767607419940}
+[00:21:42.857] Server  LOG      ✓ Compiled in 1313ms
+[00:21:55.826] Server  LOG      ✓ Compiled in 216ms
+[00:27:03.395] Server  LOG      ✓ Compiled in 587ms
+[00:27:03.695] Browser ERROR   uncaughtError: ReferenceError: Zap is not defined
+[00:28:13.989] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:28:14.006] Server  LOG      ✓ Compiled in 475ms
+[00:28:17.059] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767608433413}
+[00:28:18.346] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:28:20.677] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:28:20.677] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
+[00:28:20.677] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1767608439917}
+[00:28:21.871] Server  LOG      ✓ Compiled in 941ms
+[00:32:21.874] Server  ERROR   Could not parse CSS stylesheet
+[00:32:21.879] Server  ERROR   Could not parse CSS stylesheet
+[00:32:21.881] Server  ERROR   Could not parse CSS stylesheet
+[00:35:04.113] Server  LOG      ✓ Compiled in 474ms
+[00:35:45.090] Server  LOG      ✓ Compiled in 521ms
+[00:54:18.502] Server  ERROR   Could not parse CSS stylesheet
+[00:54:18.510] Server  ERROR   Could not parse CSS stylesheet
+[00:54:18.516] Server  ERROR   Could not parse CSS stylesheet
+[01:14:25.687] Server  ERROR   Could not parse CSS stylesheet
+[01:14:25.692] Server  ERROR   Could not parse CSS stylesheet
+[01:14:25.693] Server  ERROR   Could not parse CSS stylesheet
+[01:16:53.723] Server  LOG      ○ Compiling /api/whois ...
+[01:16:53.870] Server  LOG     [v0] Fetching RDAP data for: "printondemand.services"
+[01:16:56.848] Server  LOG     [v0] RDAP response received

@@ -1,3 +1,8 @@
 {
+  "/api/check-links/route": "app/api/check-links/route.js",
+  "/api/health-check/route": "app/api/health-check/route.js",
+  "/api/ssl/route": "app/api/ssl/route.js",
+  "/api/whois/route": "app/api/whois/route.js",
+  "/health-checker/page": "app/health-checker/page.js",
   "/page": "app/page.js"
 }

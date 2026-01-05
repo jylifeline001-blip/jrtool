@@ -523,7 +523,7 @@ function DomainChecker() {
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                             onSubmit: handleSubmit,
-                            className: "space-y-4 line-through",
+                            className: "space-y-4",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
                                     value: domainsInput,
@@ -911,7 +911,7 @@ function DomainChecker() {
                                                         children: result.domain
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/domain-checker.tsx",
-                                                        lineNumber: 385,
+                                                        lineNumber: 384,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -922,24 +922,24 @@ function DomainChecker() {
                                                                 className: "w-3 h-3 animate-spin"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/domain-checker.tsx",
-                                                                lineNumber: 389,
+                                                                lineNumber: 388,
                                                                 columnNumber: 31
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 388,
+                                                            lineNumber: 387,
                                                             columnNumber: 29
                                                         }, this) : result.error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-red-600",
                                                             children: "Error"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 392,
+                                                            lineNumber: 391,
                                                             columnNumber: 29
                                                         }, this) : formatDate(result.expiryDate)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/domain-checker.tsx",
-                                                        lineNumber: 386,
+                                                        lineNumber: 385,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -949,33 +949,33 @@ function DomainChecker() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 399,
+                                                            lineNumber: 398,
                                                             columnNumber: 29
                                                         }, this) : result.error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-red-600",
                                                             children: "N/A"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 401,
+                                                            lineNumber: 400,
                                                             columnNumber: 29
                                                         }, this) : daysLeft !== null ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: `font-semibold ${status.color}`,
                                                             children: daysLeft < 0 ? `${Math.abs(daysLeft)}d ago` : `${daysLeft}d`
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 403,
+                                                            lineNumber: 402,
                                                             columnNumber: 29
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-muted-foreground",
                                                             children: "N/A"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 407,
+                                                            lineNumber: 406,
                                                             columnNumber: 29
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/domain-checker.tsx",
-                                                        lineNumber: 397,
+                                                        lineNumber: 396,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -983,7 +983,7 @@ function DomainChecker() {
                                                         children: result.registrar || (result.loading ? "-" : "N/A")
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/domain-checker.tsx",
-                                                        lineNumber: 410,
+                                                        lineNumber: 409,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -993,19 +993,19 @@ function DomainChecker() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 415,
+                                                            lineNumber: 414,
                                                             columnNumber: 29
                                                         }, this) : result.ssl?.error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-gray-500 text-xs",
                                                             children: "N/A"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 417,
+                                                            lineNumber: 416,
                                                             columnNumber: 29
                                                         }, this) : formatDate(result.ssl?.validTo || null)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/domain-checker.tsx",
-                                                        lineNumber: 413,
+                                                        lineNumber: 412,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1015,33 +1015,33 @@ function DomainChecker() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 424,
+                                                            lineNumber: 423,
                                                             columnNumber: 29
                                                         }, this) : result.ssl?.error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-gray-500 text-xs",
                                                             children: "N/A"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 426,
+                                                            lineNumber: 425,
                                                             columnNumber: 29
                                                         }, this) : result.ssl?.daysRemaining !== null ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: `font-semibold ${sslStatus.color}`,
                                                             children: result.ssl.daysRemaining < 0 ? `${Math.abs(result.ssl.daysRemaining)}d ago` : `${result.ssl.daysRemaining}d`
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 428,
+                                                            lineNumber: 427,
                                                             columnNumber: 29
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-muted-foreground",
                                                             children: "N/A"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 434,
+                                                            lineNumber: 433,
                                                             columnNumber: 29
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/domain-checker.tsx",
-                                                        lineNumber: 422,
+                                                        lineNumber: 421,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1051,19 +1051,19 @@ function DomainChecker() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 439,
+                                                            lineNumber: 438,
                                                             columnNumber: 29
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: `inline-block px-2 py-1 text-xs font-semibold rounded-full ${sslStatus.bgColor} ${sslStatus.textColor}`,
                                                             children: sslStatus.label
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 441,
+                                                            lineNumber: 440,
                                                             columnNumber: 29
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/domain-checker.tsx",
-                                                        lineNumber: 437,
+                                                        lineNumber: 436,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1073,26 +1073,26 @@ function DomainChecker() {
                                                             children: "-"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 450,
+                                                            lineNumber: 449,
                                                             columnNumber: 29
                                                         }, this) : result.error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "inline-block px-2 py-1 text-xs font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
                                                             children: "Error"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 452,
+                                                            lineNumber: 451,
                                                             columnNumber: 29
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: `inline-block px-2 py-1 text-xs font-semibold rounded-full ${status.bgColor} ${status.textColor}`,
                                                             children: status.label
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/domain-checker.tsx",
-                                                            lineNumber: 456,
+                                                            lineNumber: 455,
                                                             columnNumber: 29
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/domain-checker.tsx",
-                                                        lineNumber: 448,
+                                                        lineNumber: 447,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]

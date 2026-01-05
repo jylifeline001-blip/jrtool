@@ -258,7 +258,7 @@ export function DomainChecker() {
           <CardDescription>Check up to 20 domains at once. Enter one domain per line</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4 line-through">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <textarea
               value={domainsInput}
               onChange={(e) => setDomainsInput(e.target.value)}
@@ -378,9 +378,8 @@ export function DomainChecker() {
                     return (
                       <tr
                         key={result.domain}
-                        className={`border-b border-border hover:bg-muted/50 transition-colors ${
-                          result.error ? "bg-red-50 dark:bg-red-950/20" : ""
-                        }`}
+                        className={`border-b border-border hover:bg-muted/50 transition-colors ${result.error ? "bg-red-50 dark:bg-red-950/20" : ""
+                          }`}
                       >
                         <td className="py-3 px-3 font-medium text-foreground">{result.domain}</td>
                         <td className="py-3 px-3 text-foreground">
